@@ -1,0 +1,91 @@
+class Solution{
+public:
+vector<int>parent;
+int find(int a){
+    if(parent[a]==a){
+        return a;
+    }
+    return parent[a] = find(parent[a]);
+}
+vector<int>size;
+void unions(int a, int b){
+    a = find(a);
+    b = find(b);
+    if(a==b) return ;
+    if(size[a]>=size[b]){
+        size[a]+=size[b];
+        parent[b] = a;
+
+    }
+    else{
+        size[b] +=size[a];
+        parent[a] = b;
+    }
+    return ;
+}
+
+vector<int> numOfIslands(int n, int m, vector<vector<int>> &A){
+      int row  = n;
+      int col  = m;
+      parent.resize(m*n);
+      size.resize(m*n,1);
+      for(int i = 0; i<n; i++){
+        for(int j = 0; j<m; j++){
+            int ele  = i*m + j;
+            parent[ele] = ele;
+        }
+      }
+      vector<vector<int>>matrix(n,vector<int>(m,0));
+
+     // now implementation 
+          int ans  = 0;
+   vector<int>finals;
+   //vector<vector<bool>>visited(m*n,false);
+
+     int dx[4] = {-1,1,0,0};
+     int dy[4] = {0,0,1,-1};
+     for(int i = 0; i<A.size(); i++){
+         int r = A[i][0];
+         int c  = A[i][1];
+         if(matrix[r][c]==1){
+            finals.push_back(ans);
+            continue;
+         }
+         matrix[r][c] = 1;
+         ans++;
+
+         bool flag = true;
+         int visited = 0;
+         for(int k  = 0; k<4; k++){
+            int nr = r+dx[k];
+            int nc = c+dy[k];
+            if(nr>=0 && nc>=0 && nr<n && nc<m){
+               
+                if(matrix[nr][nc]==1){
+                    int ele1 = r*m+c;
+                    int ele2 = nr*m+nc;
+                    flag  = false;
+                   // ans++;
+                    if(find(ele1)!=find(ele2)){
+                        ans--;
+                        unions(ele1,ele2);
+                    }
+                 
+
+                    
+                }
+            }
+         }
+         
+        
+         
+         finals.push_back(ans);
+         
+     }
+     return  finals; ;
+
+
+
+        
+    }
+};
